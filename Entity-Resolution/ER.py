@@ -90,4 +90,21 @@ def fuzzyMatchPer(name1, name2):
         return False
 
 
+def score(unresolved_entity, current_entity): 
+    ''' pass unresolved and current entities as inputs and return relevancy score from
+        an ElasticSearch query
+        To be written
+        ''' 
+    return 
+    
+
 # algo 2 
+def best_match(unresolved_entity, top_ten_entities):
+    best_match = None
+    for i in top_ten_entities:
+        if (fuzzyMatchPer(unresolved_entity, i) and score(unresolved_entity, i) > 10) or exactMathPer(unresolved_entity, i):
+            best_match = i
+            break
+    return best_match
+
+
