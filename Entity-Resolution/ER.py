@@ -97,6 +97,13 @@ def score(unresolved_entity, current_entity):
         ''' 
     return 
     
+# algo 1 
+def top_ten_entities(unresolved_entities):
+    ''' pass unresolved entity and return top-10 entities that match via Elasticsearch query
+        To be written
+        '''
+    
+    return 
 
 # algo 2 
 def best_match(unresolved_entity, top_ten_entities):
