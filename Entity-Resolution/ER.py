@@ -102,7 +102,7 @@ def score(unresolved_entity, current_entity):
 def best_match(unresolved_entity, top_ten_entities):
     best_match = None
     for i in top_ten_entities:
-        if (fuzzyMatchPer(unresolved_entity, i) and score(unresolved_entity, i) > 10) or exactMathPer(unresolved_entity, i):
+        if (score(unresolved_entity, i) > 10 and fuzzyMatchPer(unresolved_entity, i)) or exactMathPer(unresolved_entity, i):
             best_match = i
             break
     return best_match
