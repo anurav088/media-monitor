@@ -2,6 +2,12 @@ from metaphone import doublemetaphone
 from Levenshtein import distance as levenshtein_distance
 from elasticsearch import Elasticsearch
 
+client = Elasticsearch(
+    cloud_id="5a253761e0f2466baedd513681b7723e:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQwY2ZkZDVjZDNmZGQ0NzNjYmJiZjYzNzdkYjE3YTI1NyRkOWNlY2IwMDAyM2M0NGJjYWUzYWY2NjEyODczMThjNQ==", 
+    api_key="NklNR0xKQUJ6VWRlaTd2RWgycTA6T1dQR0lnTjlSSHlMelRzNl9FNDVoQQ==",
+        timeout=30,
+    retry_on_timeout=True,
+    max_retries=5)
 
 def fuzzyCheck(a,b):
     if a == b:
@@ -101,17 +107,6 @@ def score(unresolved_entity, current_entity):
     
 # algo 1 
 def top_ten_entities(unresolved_entities):
-    
-client = Elasticsearch(
-    cloud_id="5a253761e0f2466baedd513681b7723e:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQwY2ZkZDVjZDNmZGQ0NzNjYmJiZjYzNzdkYjE3YTI1NyRkOWNlY2IwMDAyM2M0NGJjYWUzYWY2NjEyODczMThjNQ==", 
-    api_key="NklNR0xKQUJ6VWRlaTd2RWgycTA6T1dQR0lnTjlSSHlMelRzNl9FNDVoQQ==",
-        timeout=30,
-    retry_on_timeout=True,
-    max_retries=5
-
-)
-def get_top_ten_relevant_entities(entity_name, index_name="unresolved_entities"):
-    # Perform a search query to retrieve the top ten relevant entities
     response = client.search(
         index=index_name,
         body={
