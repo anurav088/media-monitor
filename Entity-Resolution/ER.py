@@ -1,5 +1,6 @@
 from metaphone import doublemetaphone
 from Levenshtein import distance as levenshtein_distance
+from elasticsearch import Elasticsearch
 
 
 def fuzzyCheck(a,b):
@@ -13,7 +14,7 @@ def fuzzyCheck(a,b):
         elif (len(a) > 6) and (levenshtein_distance(a,b) == 2):
             return True
 
-def exactMathPer(name1, name2):
+def exactMatchPer(name1, name2):
 
     name1, name2 = name1.lower(), name2.lower()
     wordList1 = name1.split()
@@ -93,15 +94,59 @@ def fuzzyMatchPer(name1, name2):
 def score(unresolved_entity, current_entity): 
     ''' pass unresolved and current entities as inputs and return relevancy score from
         an ElasticSearch query
-        To be written
+        
+        Included in top_ten_entities
         ''' 
     return 
     
 # algo 1 
 def top_ten_entities(unresolved_entities):
-    ''' pass unresolved entity and return top-10 entities that match via Elasticsearch query
-        To be written
-        '''
+    
+client = Elasticsearch(
+    cloud_id="5a253761e0f2466baedd513681b7723e:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQwY2ZkZDVjZDNmZGQ0NzNjYmJiZjYzNzdkYjE3YTI1NyRkOWNlY2IwMDAyM2M0NGJjYWUzYWY2NjEyODczMThjNQ==", 
+    api_key="NklNR0xKQUJ6VWRlaTd2RWgycTA6T1dQR0lnTjlSSHlMelRzNl9FNDVoQQ==",
+        timeout=30,
+    retry_on_timeout=True,
+    max_retries=5
+
+)
+def get_top_ten_relevant_entities(entity_name, index_name="unresolved_entities"):
+    # Perform a search query to retrieve the top ten relevant entities
+    response = client.search(
+        index=index_name,
+        body={
+            "size": 10,
+            "query": {
+                "match": {
+                    "Name": entity_name
+                }
+            }
+        }
+    )
+    
+    hits = response['hits']['hits']
+    scores = [hit['_score'] for hit in hits]
+    
+    if scores:
+        max_score = max(scores)
+        min_score = min(scores)
+        normalized_scores = [(score - min_score) / (max_score - min_score) for score in scores]
+    else:
+        normalized_scores = []
+
+    results = []
+    for hit, score in zip(hits, normalized_scores):
+        result = hit['_source']
+        result['confidence'] = score
+        results.append(result)
+    
+    return results
+
+entity_name = "Chandrashekhar Singh"
+top_ten_entities = get_top_ten_relevant_entities(entity_name)
+for entity in top_ten_entities:
+    print(entity)
+
     
     return 
 
@@ -109,7 +154,7 @@ def top_ten_entities(unresolved_entities):
 def best_match(unresolved_entity, top_ten_entities):
     best_match = None
     for i in top_ten_entities:
-        if (score(unresolved_entity, i) > 10 and fuzzyMatchPer(unresolved_entity, i)) or exactMathPer(unresolved_entity, i):
+        if (score(unresolved_entity, i) > 10 and fuzzyMatchPer(unresolved_entity, i)) or exactMatchPer(unresolved_entity, i):
             best_match = i
             break
     return best_match
