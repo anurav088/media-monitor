@@ -137,13 +137,6 @@ def top_ten_entities(unresolved_entities):
     
     return results
 
-entity_name = "Chandrashekhar Singh"
-top_ten_entities = get_top_ten_relevant_entities(entity_name)
-for entity in top_ten_entities:
-    print(entity)
-
-    
-    return 
 
 # algo 2 
 def best_match(unresolved_entity, top_ten_entities):
