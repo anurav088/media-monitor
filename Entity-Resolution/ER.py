@@ -135,11 +135,36 @@ def top_ten_entities(unresolved_entitiy):
 
 # algo 2 
 def best_match(unresolved_entity, top_ten_entities):
+
     best_match = None
+     
+    #approach (i)
+
     for i in top_ten_entities:
-        if (score(unresolved_entity, i) > 10 and fuzzyMatchPer(unresolved_entity, i)) or exactMatchPer(unresolved_entity, i):
-            best_match = i
+        if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, i['Name'])) or (exactMatchPer(unresolved_entity, i['Name'])):
+            best_match = i 
             break
+    
+    # approach (ii)
+
+    # for i in top_ten_entities:
+    #     if ((i['confidence'] > 10) and fuzzyMatchPer (unresolved_entity, i['Name'])) or (exactMatchPer(unresolved_entity, i['Name'])):
+    #         if i['aliases']:
+    #             for j in (i['aliases']):
+    #                 flag = True
+    #                 if (fuzzyMatchPer(unresolved_entity, j['Name'])) or (exactMatchPer(unresolved_entity, j['Name])):
+    #                     continue 
+    #                 else: #if even 1 alias does not match
+    #                     flag = False
+    #                     break
+
+    #             if flag == True:
+    #                 best_match = i     
+    #                 break           
+    #         else:
+    #             best_match = i
+    #             break 
+        
     return best_match
 
 
