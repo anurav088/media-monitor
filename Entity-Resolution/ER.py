@@ -97,23 +97,18 @@ def fuzzyMatchPer(name1, name2):
         return False
 
 
-def score(unresolved_entity, current_entity): 
-    ''' pass unresolved and current entities as inputs and return relevancy score from
-        an ElasticSearch query
-        
-        Included in top_ten_entities
-        ''' 
-    return 
-    
 # algo 1 
-def top_ten_entities(unresolved_entities):
+def top_ten_entities(unresolved_entitiy):
+
+    index_name = 'unresolved_entities'
+
     response = client.search(
-        index=index_name,
-        body={
+        index = index_name,
+        body = {
             "size": 10,
             "query": {
                 "match": {
-                    "Name": entity_name
+                    "Name": unresolved_entitiy
                 }
             }
         }
