@@ -1,13 +1,60 @@
+import time 
+
 from metaphone import doublemetaphone
 from Levenshtein import distance as levenshtein_distance
 from elasticsearch import Elasticsearch
 
+
 client = Elasticsearch(
     cloud_id="5a253761e0f2466baedd513681b7723e:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQwY2ZkZDVjZDNmZGQ0NzNjYmJiZjYzNzdkYjE3YTI1NyRkOWNlY2IwMDAyM2M0NGJjYWUzYWY2NjEyODczMThjNQ==", 
     api_key="NklNR0xKQUJ6VWRlaTd2RWgycTA6T1dQR0lnTjlSSHlMelRzNl9FNDVoQQ==",
-        timeout=30,
+    timeout=30,
     retry_on_timeout=True,
     max_retries=5)
+
+
+def name(entity):
+    return entity["_source"]["Name"]
+
+def abbreviationsCheck(name1, name2):
+    name1, name2 = name1.lower(), name2.lower()
+
+    wordList1 = name1.split()
+    wordList2 = name2.split()
+
+    initials1 = {}
+    initials2 = {}
+
+    for i in wordList1:
+        if i not in initials1:
+            initials1[i] = 1
+        else: 
+            initials1[i] += 1
+            
+    for j in wordList2:
+        if j not in initials2:
+            initials2[j] = 1
+        else: 
+            initials2[j] += 1
+    
+    if len(wordList1) <= len(wordList2):
+        smaller = initials1
+        bigger = initials2
+    else:
+        smaller = initials2
+        bigger = initials1
+    
+    for i in smaller:
+        while smaller[i] > 0:
+            if i in bigger and bigger[i] > 0:
+                bigger[i] -= 1
+                smaller[i] -= 1
+            else:
+                return False
+    return True
+            
+            
+
 
 def fuzzyCheck(a,b):
     if a == b:
@@ -86,8 +133,6 @@ def fuzzyMatchPer(name1, name2):
     for j in wordList2:
         if j not in similar:
             wordList2_new.append(j)    
-
-
     # return wordList1_new, wordList2_new 
 
     #final check/step
@@ -100,7 +145,7 @@ def fuzzyMatchPer(name1, name2):
 # algo 1 
 def top_ten_entities(unresolved_entitiy):
 
-    index_name = 'unresolved_entities'
+    index_name = 'resolved_entities'
 
     response = client.search(
         index = index_name,
@@ -120,51 +165,52 @@ def top_ten_entities(unresolved_entitiy):
     if scores:
         max_score = max(scores)
         min_score = min(scores)
-        normalized_scores = [(score - min_score) / (max_score - min_score) for score in scores]
+        if (max_score - min_score) != 0:
+            normalized_scores = [(score - min_score) / (max_score - min_score) for score in scores]
+        else:
+            normalized_scores = []
     else:
         normalized_scores = []
 
     results = []
+
     for hit, score in zip(hits, normalized_scores):
-        result = hit['_source']
+        result = hit
         result['confidence'] = score
         results.append(result)
-    
+      
     return results
 
-
 # algo 2 
+'''
+1. for this algo, how hard a filter do we want for merging? test for different cases
+2. test with main name matching and all / some matching. some = ?'''
+
 def best_match(unresolved_entity, top_ten_entities):
 
     best_match = None
-     
-    #approach (i)
-
-    for i in top_ten_entities:
-        if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, i['Name'])) or (exactMatchPer(unresolved_entity, i['Name'])):
-            best_match = i 
-            break
     
-    # approach (ii)
+    for i in top_ten_entities:
+        if abbreviationsCheck(unresolved_entity, name(i)):
+            if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, name(i))) or (exactMatchPer(unresolved_entity, name(i))):
+                if i['_source']['Aliases'] != []:
+                    for j in (i['_source']['Aliases']):
+                        flag = True
+                        if (fuzzyMatchPer(unresolved_entity, name(j))) or (exactMatchPer(unresolved_entity, name(j))):
+                            continue 
+                        else: #if even 1 alias does not match
+                            flag = False
+                            break
 
-    # for i in top_ten_entities:
-    #     if ((i['confidence'] > 10) and fuzzyMatchPer (unresolved_entity, i['Name'])) or (exactMatchPer(unresolved_entity, i['Name'])):
-    #         if i['aliases']:
-    #             for j in (i['aliases']):
-    #                 flag = True
-    #                 if (fuzzyMatchPer(unresolved_entity, j['Name'])) or (exactMatchPer(unresolved_entity, j['Name])):
-    #                     continue 
-    #                 else: #if even 1 alias does not match
-    #                     flag = False
-    #                     break
-
-    #             if flag == True:
-    #                 best_match = i     
-    #                 break           
-    #         else:
-    #             best_match = i
-    #             break 
+                    if flag == True:
+                        best_match = i     
+                        break           
+                else:
+                    best_match = i
+                    break
+        else:
+            continue 
+        
         
     return best_match
-
-
+    
