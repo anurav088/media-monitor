@@ -193,8 +193,8 @@ def best_match(unresolved_entity, top_ten_entities):
     for i in top_ten_entities:
         if abbreviationsCheck(unresolved_entity, name(i)):
             if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, name(i))) or (exactMatchPer(unresolved_entity, name(i))):
-                if i['_source']['Aliases'] != []:
-                    for j in (i['_source']['Aliases']):
+                if i['_source']['aliases'] != []:
+                    for j in (i['_source']['aliases']):
                         flag = True
                         if (fuzzyMatchPer(unresolved_entity, name(j))) or (exactMatchPer(unresolved_entity, name(j))):
                             continue 
