@@ -38,9 +38,6 @@ def resolve(unresolved_entity, best_match):
             )
         print(f"Added alias {unresolved_entity['Name']} to entity {best_match['_source']['Name']} in resolved_entities")
 
-# resolve({'Name': 'Thulasi G', 'ID': '197861', 'title': 'POL', 'resolved': False}, 
-#         {'_index': 'new_resolved_entities_index', '_id': 'soMWPpABzUdei7vE05IS', '_score': 1.0, '_source': {'Name': 'Thulasi G', '
-# ID': '197861', 'title': 'POL', 'resolved': False}} )
 
 def extract_entities(limit = None):
         
