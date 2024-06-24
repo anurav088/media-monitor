@@ -33,7 +33,7 @@ def resolve(unresolved_entity, best_match):
             }
         response = client.update(
                 index=index_name,
-                id=best_match['ID'],
+                id=best_match['_id'],
                 body=update_body
             )
         print(f"Added alias {unresolved_entity['Name']} to entity {best_match['_source']['Name']} in resolved_entities")
