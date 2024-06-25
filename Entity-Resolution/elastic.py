@@ -12,8 +12,8 @@ client = Elasticsearch(
     max_retries=5
 )
 
-def resolve(unresolved_entity, best_match):
-    index_name = 'resolved_entities'
+def resolve(unresolved_entity, best_match, index_name):
+    # index_name = 'resolved_entities'
     if best_match == None: # Insert unresolved entity as a new entity in the resolved_entities index
         unresolved_entity['aliases'] = []
         response = client.index(
@@ -38,10 +38,13 @@ def resolve(unresolved_entity, best_match):
             )
         print(f"Added alias {unresolved_entity['Name']} to entity {best_match['_source']['Name']} in resolved_entities")
 
+# resolve({'Name': 'Thulasi G', 'ID': '197861', 'title': 'POL', 'resolved': False}, 
+#         {'_index': 'new_resolved_entities_index', '_id': 'soMWPpABzUdei7vE05IS', '_score': 1.0, '_source': {'Name': 'Thulasi G', '
+# ID': '197861', 'title': 'POL', 'resolved': False}} )
 
-def extract_entities(limit = None):
+def extract_entities(index_name, limit = None):
         
-        index_name = 'unresolved_entities'
+        # index_name = 'unresolved_entities'
 
         if not client.indices.exists(index=index_name):
             print(f"Index '{index_name}' does not exist.")
