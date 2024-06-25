@@ -95,9 +95,8 @@ def fuzzyMatchPer(name1, name2):
     similar = set()
 
     for i in wordList1:
-        if len(i) > 1:
-            for j in wordList2:
-                if len(j)>1 and fuzzyCheck(i,j): 
+        for j in wordList2:
+            if fuzzyCheck(i,j): 
                     similar.add(i)
                     similar.add(j)
     #updating lists  
