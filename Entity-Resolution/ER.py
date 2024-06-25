@@ -26,16 +26,16 @@ def abbreviationsCheck(name1, name2):
     initials2 = {}
 
     for i in wordList1:
-        if i not in initials1:
-            initials1[i] = 1
+        if i[0] not in initials1:
+            initials1[i[0]] = 1
         else: 
-            initials1[i] += 1
+            initials1[i[0]] += 1
             
     for j in wordList2:
-        if j not in initials2:
-            initials2[j] = 1
+        if j[0] not in initials2:
+            initials2[j[0]] = 1
         else: 
-            initials2[j] += 1
+            initials2[j[0]] += 1
     
     if len(wordList1) <= len(wordList2):
         smaller = initials1
