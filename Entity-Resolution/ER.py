@@ -143,7 +143,9 @@ def fuzzyMatchPer(name1, name2):
 
 
 # algo 1 
-def top_ten_entities(unresolved_entitiy,index_name):
+def top_ten_entities(unresolved_entitiy):
+
+    index_name = 'resolved_entities'
 
     response = client.search(
         index = index_name,
@@ -194,7 +196,7 @@ def best_match(unresolved_entity, top_ten_entities):
                 if i['_source']['aliases'] != []:
                     for j in (i['_source']['aliases']):
                         flag = True
-                        if (fuzzyMatchPer(unresolved_entity, j['Name'])) or (exactMatchPer(unresolved_entity, j['Name'])):
+                        if (fuzzyMatchPer(unresolved_entity, name(j))) or (exactMatchPer(unresolved_entity, name(j))):
                             continue 
                         else: #if even 1 alias does not match
                             flag = False
