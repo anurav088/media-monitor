@@ -23,12 +23,12 @@ def resolve(unresolved_entity, best_match, index_name):
         print(f"Inserted entity {unresolved_entity['Name']} into resolved_entities")
 
     else: # Add unresolved entity as an alias to the best match
-        aliases = best_match.get('Aliases', [])
-        aliases.append(unresolved_entity['Name'])
+        aliases = best_match['_source']['aliases']
+        aliases.append({'ID': unresolved_entity['ID'], 'title': unresolved_entity['title'], 'Name': unresolved_entity['Name']})
             
         update_body = {
             "doc": {
-                    "Aliases": aliases
+                    "aliases": aliases
                 }
             }
         response = client.update(
@@ -38,9 +38,8 @@ def resolve(unresolved_entity, best_match, index_name):
             )
         print(f"Added alias {unresolved_entity['Name']} to entity {best_match['_source']['Name']} in resolved_entities")
 
-# resolve({'Name': 'Thulasi G', 'ID': '197861', 'title': 'POL', 'resolved': False}, 
-#         {'_index': 'new_resolved_entities_index', '_id': 'soMWPpABzUdei7vE05IS', '_score': 1.0, '_source': {'Name': 'Thulasi G', '
-# ID': '197861', 'title': 'POL', 'resolved': False}} )
+
+
 
 def extract_entities(index_name, limit = None):
         
