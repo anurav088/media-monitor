@@ -62,10 +62,11 @@ def fuzzyCheck(a,b):
     elif doublemetaphone(a) == doublemetaphone(b):
         return True
     elif (a[0] == b[0]): 
-        if (len(a) <= 6) and (levenshtein_distance(a,b) == 1):
+        if (len(a) <= 6) and (levenshtein_distance(a,b) <= 1):
             return True
-        elif (len(a) > 6) and (levenshtein_distance(a,b) == 2):
+        elif (len(a) > 6) and (levenshtein_distance(a,b) <= 2):
             return True
+    return False 
 
 def exactMatchPer(name1, name2):
 
@@ -192,11 +193,11 @@ def best_match(unresolved_entity, top_ten_entities):
     
     for i in top_ten_entities:
         if abbreviationsCheck(unresolved_entity, name(i)):
-            if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, name(i))) or (exactMatchPer(unresolved_entity, name(i))):
+            if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, name(i))):
                 if i['_source']['aliases'] != []:
                     for j in (i['_source']['aliases']):
                         flag = True
-                        if (fuzzyMatchPer(unresolved_entity, name(j))) or (exactMatchPer(unresolved_entity, name(j))):
+                        if (fuzzyMatchPer(unresolved_entity, name(j))):
                             continue 
                         else: #if even 1 alias does not match
                             flag = False
