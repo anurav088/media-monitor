@@ -144,9 +144,9 @@ def fuzzyMatchPer(name1, name2):
 
 
 # algo 1 
-def top_ten_entities(unresolved_entitiy):
+def top_ten_entities(unresolved_entitiy, index_name):
 
-    index_name = 'resolved_entities'
+    # index_name = 'resolved_entities'
 
     response = client.search(
         index = index_name,
