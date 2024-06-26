@@ -162,19 +162,11 @@ def top_ten_entities(unresolved_entitiy, index_name):
     hits = response['hits']['hits']
     scores = [hit['_score'] for hit in hits]
     
-    if scores:
-        max_score = max(scores)
-        min_score = min(scores)
-        if (max_score - min_score) != 0:
-            normalized_scores = [(score - min_score) / (max_score - min_score) for score in scores]
-        else:
-            normalized_scores = []
-    else:
-        normalized_scores = []
+    
 
     results = []
 
-    for hit, score in zip(hits, normalized_scores):
+    for hit, score in zip(hits, scores):
         result = hit
         result['confidence'] = score
         results.append(result)
@@ -192,7 +184,7 @@ def best_match(unresolved_entity, top_ten_entities):
     
     for i in top_ten_entities:
         if abbreviationsCheck(unresolved_entity, name(i)):
-            if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, name(i))):
+            if ((i['confidence'] > 10) and fuzzyMatchPer (unresolved_entity, name(i))):
                 if i['_source']['aliases'] != []:
                     for j in (i['_source']['aliases']):
                         flag = True
