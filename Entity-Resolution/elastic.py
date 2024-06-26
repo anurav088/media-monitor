@@ -53,7 +53,9 @@ def extract_entities(index_name, limit = None):
             query = {"query": {"match_all": {}}}
         else:
             query = {"query": {"match_all": {}}, "size": limit}
-        
+
+        query["sort"] = [{"ID": {"order": "asc"}}]
+    
         response = client.search(index=index_name, body=query)
         docs = response['hits']['hits']
         
