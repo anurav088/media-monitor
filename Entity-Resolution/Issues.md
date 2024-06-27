@@ -8,3 +8,6 @@
   
   
 </ol>
+
+
+<img src = 'flowchart.png'>
