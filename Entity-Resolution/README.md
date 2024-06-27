@@ -1,3 +1,6 @@
+<img src = 'flowchart.png'>
+
+
 <h1>Issues + Changes</h1>
 
 <ol>
@@ -10,4 +13,3 @@
 </ol>
 
 
-<img src = 'flowchart.png'>
