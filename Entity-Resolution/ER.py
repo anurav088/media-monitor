@@ -17,45 +17,17 @@ def name(entity):
     return entity["_source"]["Name"]
 
 def abbreviationsCheck(name1, name2):
-    name1, name2 = name1.lower(), name2.lower()
-
-    wordList1 = name1.split()
-    wordList2 = name2.split()
-
-    initials1 = {}
-    initials2 = {}
-
-    for i in wordList1:
-        if i[0] not in initials1:
-            initials1[i[0]] = 1
-        else: 
-            initials1[i[0]] += 1
-            
-    for j in wordList2:
-        if j[0] not in initials2:
-            initials2[j[0]] = 1
-        else: 
-            initials2[j[0]] += 1
     
-    if len(wordList1) <= len(wordList2):
-        smaller = initials1
-        bigger = initials2
-    else:
-        smaller = initials2
-        bigger = initials1
+    initials1 = [word[0].upper() for word in name1.split()]
+    initials2 = [word[0].upper() for word in name2.split()]
+
+    initials1.sort(), initials2.sort()
+
+    counter1, counter2 = Counter(initials1), Counter(initials2)
+    intersection = list((counter1 & counter2).elements())
     
-    for i in smaller:
-        while smaller[i] > 0:
-            if i in bigger and bigger[i] > 0:
-                bigger[i] -= 1
-                smaller[i] -= 1
-            else:
-                return False
-    return True
+    return (intersection == initials1) or (intersection == initials2) 
             
-            
-
-
 def fuzzyCheck(a,b):
     if a == b:
         return True
