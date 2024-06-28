@@ -9,20 +9,31 @@ from elastic import *
 
 def pipeline(limit = None):
     
-    unresolved_entities_index = 'unresolved_entities'
+    unresolved_entities_index = 'unresolved'
     resolved_entities_index = 'resolved_entities'
     
     entities_to_process = extract_entities(index_name=unresolved_entities_index, limit = limit)
 
-    for en in entities_to_process:
-        print(en)
+    start_time = time.time()
+    
+    
+    for count, en in enumerate(entities_to_process):
+        
+        print(count,":" , en)
         _name = name(en)
+        
         _top_ten_entities = top_ten_entities(_name, index_name=resolved_entities_index)
         _best_match = best_match(_name, _top_ten_entities)
         resolve(en['_source'], _best_match, index_name = resolved_entities_index)
+    
+    end_time = time.time()
+
+    print('----------------------------------------')
+    print(f"Elapsed time: {end_time - start_time} seconds")
+    print('----------------------------------------')
+    
 
 
 pipeline(1000)
         
-
 
