@@ -38,8 +38,9 @@ def resolve(unresolved_entity, best_match, index_name):
             )
         print(f"Added alias {unresolved_entity['Name']} to entity {best_match['_source']['Name']} in resolved_entities")
 
-
-
+# resolve({'Name': 'Thulasi G', 'ID': '197861', 'title': 'POL', 'resolved': False}, 
+#         {'_index': 'new_resolved_entities_index', '_id': 'soMWPpABzUdei7vE05IS', '_score': 1.0, '_source': {'Name': 'Thulasi G', '
+# ID': '197861', 'title': 'POL', 'resolved': False}} )
 
 def extract_entities(index_name, limit = None):
         
@@ -53,9 +54,9 @@ def extract_entities(index_name, limit = None):
             query = {"query": {"match_all": {}}}
         else:
             query = {"query": {"match_all": {}}, "size": limit}
-
+        
         query["sort"] = [{"ID": {"order": "asc"}}]
-    
+        
         response = client.search(index=index_name, body=query)
         docs = response['hits']['hits']
         
