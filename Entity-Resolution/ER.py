@@ -117,17 +117,26 @@ def fuzzyMatchPer(name1, name2):
 
 
 # algo 1 
-def top_ten_entities(unresolved_entitiy, index_name):
+def top_ten_entities(unresolved_entity, index_name):
 
     # index_name = 'resolved_entities'
 
+    entity_title = unresolved_entity['_source']['title']
     response = client.search(
-        index = index_name,
-        body = {
-            "size": 10,
+        index=index_name,
+        body={
             "query": {
-                "match": {
-                    "Name": unresolved_entitiy
+                "bool": {
+                    "must": {
+                        "match": {
+                            "Name": unresolved_entity['_source']['Name']
+                        }
+                    },
+                    "must_not": {
+                        "match": {
+                            "title": entity_title
+                        }
+                    }
                 }
             }
         }

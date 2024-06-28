@@ -12,58 +12,77 @@ client = Elasticsearch(
     max_retries=5
 )
 
+
 def resolve(unresolved_entity, best_match, index_name):
-    # index_name = 'resolved_entities'
-    if best_match == None: # Insert unresolved entity as a new entity in the resolved_entities index
+    if best_match is None:  # Insert unresolved entity as a new entity in the resolved_entities index
         unresolved_entity['aliases'] = []
         response = client.index(
             index=index_name,
             body=unresolved_entity
         )
-        print(f"Inserted entity {unresolved_entity['Name']} into resolved_entities")
+        print(f"Inserted entity {unresolved_entity['Name']} into {index_name}")
 
-    else: # Add unresolved entity as an alias to the best match
+    else:  # Add unresolved entity as an alias to the best match
         aliases = best_match['_source']['aliases']
-        aliases.append({'ID': unresolved_entity['ID'], 'title': unresolved_entity['title'], 'Name': unresolved_entity['Name']})
+        alias_entry = {
+            'ID': unresolved_entity['ID'],
+            'title': unresolved_entity['title'],
+            'Name': unresolved_entity['Name'],
+            'confidence': best_match['confidence']  
+        }
+        aliases.append(alias_entry)
             
         update_body = {
             "doc": {
-                    "aliases": aliases
-                }
+                "aliases": aliases
             }
+        }
         response = client.update(
-                index=index_name,
-                id=best_match['_id'],
-                body=update_body
-            )
-        print(f"Added alias {unresolved_entity['Name']} to entity {best_match['_source']['Name']} in resolved_entities")
+            index=index_name,
+            id=best_match['_id'],
+            body=update_body
+        )
+        print(f"Added alias {unresolved_entity['Name']} to entity {best_match['_source']['Name']} in {index_name}")
+
 
 # resolve({'Name': 'Thulasi G', 'ID': '197861', 'title': 'POL', 'resolved': False}, 
 #         {'_index': 'new_resolved_entities_index', '_id': 'soMWPpABzUdei7vE05IS', '_score': 1.0, '_source': {'Name': 'Thulasi G', '
 # ID': '197861', 'title': 'POL', 'resolved': False}} )
 
-def extract_entities(index_name, limit = None):
-        
-        # index_name = 'unresolved_entities'
+def extract_entities(index_name, limit=None):
+    if not client.indices.exists(index=index_name):
+        print(f"Index '{index_name}' does not exist.")
+        return False
 
-        if not client.indices.exists(index=index_name):
-            print(f"Index '{index_name}' does not exist.")
-            return False
+    query = {
+        "query": {
+            "bool": {
+                "must": {
+                    "match": {
+                        "title": "POL"
+                    }
+                }
+            }
+        },
+        "sort": [
+            {
+                "ID": {
+                    "order": "asc"
+                }
+            }
+        ]
+    }
 
-        if limit == None: 
-            query = {"query": {"match_all": {}}}
-        else:
-            query = {"query": {"match_all": {}}, "size": limit}
-        
-        query["sort"] = [{"ID": {"order": "asc"}}]
-        
-        response = client.search(index=index_name, body=query)
-        docs = response['hits']['hits']
-        
-        entities = []
-        for doc in docs:
-             entities.append(doc)
-        
-        return entities
-   
+    entities = []
+    page = client.search(index=index_name, body=query, scroll='2m', size=1000)
+    scroll_id = page['_scroll_id']
+    hits = page['hits']['hits']
+    
+    while len(hits) > 0:
+        entities.extend(hits)
+        page = client.scroll(scroll_id=scroll_id, scroll='2m')
+        scroll_id = page['_scroll_id']
+        hits = page['hits']['hits']
+
+    return entities
  
