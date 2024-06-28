@@ -3,7 +3,7 @@ import time
 from metaphone import doublemetaphone
 from Levenshtein import distance as levenshtein_distance
 from elasticsearch import Elasticsearch
-
+from collections import Counter
 
 client = Elasticsearch(
     cloud_id="5a253761e0f2466baedd513681b7723e:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQwY2ZkZDVjZDNmZGQ0NzNjYmJiZjYzNzdkYjE3YTI1NyRkOWNlY2IwMDAyM2M0NGJjYWUzYWY2NjEyODczMThjNQ==", 
@@ -28,6 +28,8 @@ def abbreviationsCheck(name1, name2):
     
     return (intersection == initials1) or (intersection == initials2) 
             
+
+
 def fuzzyCheck(a,b):
     if a == b:
         return True
@@ -134,21 +136,25 @@ def top_ten_entities(unresolved_entitiy, index_name):
     hits = response['hits']['hits']
     scores = [hit['_score'] for hit in hits]
     
-    
-
+    if scores:
+        max_score = max(scores)
+        min_score = min(scores)
+        if (max_score - min_score) != 0:
+            normalized_scores = [(score - min_score) / (max_score - min_score) for score in scores]
+        else:
+            normalized_scores = [score for score in scores]
+    else:
+        normalized_scores = []
     results = []
 
-    for hit, score in zip(hits, scores):
+    for hit, score in zip(hits, normalized_scores):
         result = hit
         result['confidence'] = score
         results.append(result)
       
-    return results
+    return results 
 
 # algo 2 
-'''
-1. for this algo, how hard a filter do we want for merging? test for different cases
-2. test with main name matching and all / some matching. some = ?'''
 
 def best_match(unresolved_entity, top_ten_entities):
 
@@ -156,11 +162,11 @@ def best_match(unresolved_entity, top_ten_entities):
     
     for i in top_ten_entities:
         if abbreviationsCheck(unresolved_entity, name(i)):
-            if ((i['confidence'] > 10) and fuzzyMatchPer (unresolved_entity, name(i))):
+            if ((i['confidence'] > 0.1) and fuzzyMatchPer (unresolved_entity, name(i))):
                 if i['_source']['aliases'] != []:
                     for j in (i['_source']['aliases']):
                         flag = True
-                        if (fuzzyMatchPer(unresolved_entity, name(j))):
+                        if (fuzzyMatchPer(unresolved_entity, j['Name'])):
                             continue 
                         else: #if even 1 alias does not match
                             flag = False
@@ -177,4 +183,3 @@ def best_match(unresolved_entity, top_ten_entities):
         
         
     return best_match
-    
