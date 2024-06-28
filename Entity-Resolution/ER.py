@@ -54,18 +54,14 @@ def exactMatchPer(name1, name2):
 def fuzzyMatchPer(name1, name2):
     
     name1, name2 = name1.lower(), name2.lower()
-
-    wordList1 = name1.split()
-    wordList2 = name2.split()
-
+    wordList1, wordList2 = name1.split(), name2.split()
+    
     #step 1 : remove matching initials 
     while (len(wordList1[0]) == len(wordList2[0]) == 1) and (wordList1[0] == wordList2[0]):
-        wordList1 = wordList1[1:]
-        wordList2 = wordList2[1:]
+        wordList1.pop(0)
+        wordList2.pop(0)
     
     #step 2 : remove similar multi-letter words
-    wordList1_new = []
-    wordList2_new = []
     similar = set()
 
     for i in wordList1:
@@ -73,20 +69,11 @@ def fuzzyMatchPer(name1, name2):
             if fuzzyCheck(i,j): 
                     similar.add(i)
                     similar.add(j)
-    #updating lists  
-    for i in wordList1:
-        if i not in similar:
-            wordList1_new.append(i)
-    for j in wordList2:
-        if j not in similar:
-            wordList2_new.append(j)
-
-    wordList1 = wordList1_new
-    wordList2 = wordList2_new
+   
+    wordList1 = [i for i in wordList1 if i not in similar]
+    wordList2 = [j for j in wordList2 if j not in similar]
 
     #step 3 : remove initial-word pairs 
-    wordList1_new = []
-    wordList2_new = []
     similar = set()
 
     for i in wordList1:
@@ -100,17 +87,13 @@ def fuzzyMatchPer(name1, name2):
                 if j == i[0]: #check for words in list1 mapping to initials in list2
                     similar.add(i)
                     similar.add(j)
-    #updating lists                  
-    for i in wordList1:
-        if i not in similar:
-            wordList1_new.append(i)
-    for j in wordList2:
-        if j not in similar:
-            wordList2_new.append(j)    
-    # return wordList1_new, wordList2_new 
 
+    #updating lists        
+    wordList1 = [i for i in wordList1 if i not in similar]
+    wordList2 = [j for j in wordList2 if j not in similar]          
+    
     #final check/step
-    if wordList1_new == wordList2_new:
+    if wordList1 == wordList2:
         return True 
     else:
         return False
