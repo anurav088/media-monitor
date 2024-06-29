@@ -139,7 +139,7 @@ def top_ten_entities(unresolved_entity, index_name):
         normalized_scores = []
     results = []
 
-    for hit, score in zip(hits, normalized_scores):
+    for hit, score in zip(hits, scores):
         result = hit
         result['confidence'] = score
         results.append(result)
