@@ -74,20 +74,13 @@ def resolve(unresolved_entity, best_match, index_name):
 
 
 def extract_entities(index_name, limit=None):
-
     if not client.indices.exists(index=index_name):
         print(f"Index '{index_name}' does not exist.")
-        return False
+        return []
 
     query = {
         "query": {
-            "bool": {
-                "must": {
-                    "match": {
-                        "title": "IAS"
-                    }
-                }
-            }
+            "match_all": {}
         },
         "sort": [
             {
@@ -99,14 +92,18 @@ def extract_entities(index_name, limit=None):
     }
 
     entities = []
-    page = client.search(index=index_name, body=query, scroll='2m', size=limit)
+    batch_size = 10000
+    current_size = limit if limit and limit < batch_size else batch_size
+    page = client.search(index=index_name, body=query, scroll='2m', size=current_size)
     scroll_id = page['_scroll_id']
     hits = page['hits']['hits']
-
+    
     while len(hits) > 0:
         entities.extend(hits)
+        if limit and len(entities) >= limit:
+            break
         page = client.scroll(scroll_id=scroll_id, scroll='2m')
         scroll_id = page['_scroll_id']
         hits = page['hits']['hits']
 
-    return entities
+    return entities[:limit] if limit else entities
