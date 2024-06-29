@@ -74,6 +74,9 @@ def fuzzyMatchPer(name1, name2):
     wordList2 = [j for j in wordList2 if j not in similar]
 
     #step 3 : remove initial-word pairs 
+    if len(wordList1) != len(wordList2):
+        return False 
+    
     similar = set()
 
     for i in wordList1:
