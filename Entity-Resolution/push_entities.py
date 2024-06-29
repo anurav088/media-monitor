@@ -1,0 +1,51 @@
+from elasticsearch import Elasticsearch, helpers
+import csv
+
+es = Elasticsearch(
+cloud_id="5a253761e0f2466baedd513681b7723e:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQwY2ZkZDVjZDNmZGQ0NzNjYmJiZjYzNzdkYjE3YTI1NyRkOWNlY2IwMDAyM2M0NGJjYWUzYWY2NjEyODczMThjNQ==",
+api_key="NklNR0xKQUJ6VWRlaTd2RWgycTA6T1dQR0lnTjlSSHlMelRzNl9FNDVoQQ==")
+
+
+# Create index with mapping
+# index_name = 'unresolved'
+# mapping = {
+#     "mappings": {
+#         "properties": {
+#             "Name": {"type": "text"},
+#             "ID": {"type": "keyword"},
+#             "title": {"type": "keyword"}
+#         }
+#     }
+# }
+
+# # Delete the index if it exists
+# if es.indices.exists(index=index_name):
+#     es.indices.delete(index=index_name)
+
+# # Create the index
+# es.indices.create(index=index_name, body=mapping)
+
+def index_csv_data(file_path, title):
+    with open(file_path, mode='r', encoding='utf-8') as file:
+        reader = csv.DictReader(file)
+        actions = []
+        for row in reader:
+            action = {
+                "_index": 'res_conf2',
+                "_source": {
+                    "Name": row['Name'],
+                    "ID": row['ID'],
+                    "title": title,
+                    "aliases": []
+                }
+            }
+            actions.append(action)
+        helpers.bulk(es, actions)
+
+# Index data from POL_final.csv
+index_csv_data('POL_final.csv', 'POL')
+
+# Index data from IAS_proc.csv
+#index_csv_data('IAS_processed.csv', 'IAS')
+
+print("Data indexed successfully")
