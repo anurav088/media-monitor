@@ -117,12 +117,8 @@ def top_ten_entities(unresolved_entity, index_name):
                         "match": {
                             "Name": unresolved_entity['_source']['Name']
                         }
-                    },
-                    "must_not": {
-                        "match": {
-                            "title": entity_title
-                        }
                     }
+                   
                 }
             }
         }
