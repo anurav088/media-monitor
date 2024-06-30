@@ -36,7 +36,7 @@ def fuzzyCheck(a,b):
     elif doublemetaphone(a) == doublemetaphone(b):
         return True
     elif (a[0] == b[0]): 
-        if (len(a) <= 6) and (levenshtein_distance(a,b) <= 1):
+        if (len(a) <= 6 and len(a) > 3) and (levenshtein_distance(a,b) <= 1):
             return True
         elif (len(a) > 6) and (levenshtein_distance(a,b) <= 2):
             return True
