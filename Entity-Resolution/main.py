@@ -20,6 +20,7 @@ def pipeline(limit = None):
     for count, en in enumerate(entities_to_process):
         
         print(count,":" , en)
+        en['_source']['Name'] = en['_source']['Name'].strip()
         _name = name(en)
         
         _top_ten_entities = top_ten_entities(en, index_name=resolved_entities_index)
