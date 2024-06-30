@@ -14,6 +14,8 @@ client = Elasticsearch(
 
 
 def resolve(unresolved_entity, best_match, index_name):
+    unresolved_entity['Name'] = unresolved_entity['Name'].upper()
+    
     if best_match is None:  # Insert unresolved entity as a new entity in the resolved_entities index
         unresolved_entity['aliases'] = []
         response = client.index(
