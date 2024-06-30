@@ -57,9 +57,12 @@ def fuzzyMatchPer(name1, name2):
     wordList1, wordList2 = name1.split(), name2.split()
     
     #step 1 : remove matching initials 
-    while (len(wordList1[0]) == len(wordList2[0]) == 1) and (wordList1[0] == wordList2[0]):
-        wordList1.pop(0)
-        wordList2.pop(0)
+    try:
+        while (len(wordList1[0]) == len(wordList2[0]) == 1) and (wordList1[0] == wordList2[0]):
+            wordList1.pop(0)
+            wordList2.pop(0)
+    except: 
+        pass
     
     #step 2 : remove similar multi-letter words
     similar = set()
