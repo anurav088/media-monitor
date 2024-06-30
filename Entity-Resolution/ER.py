@@ -115,7 +115,7 @@ def top_ten_entities(unresolved_entity, index_name):
                 "bool": {
                     "must": {
                         "match": {
-                            "Name": unresolved_entity['_source']['Name']
+                            "Name": unresolved_entity['_source']['Name'].upper()
                         }
                     }
                    
