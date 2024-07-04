@@ -9,7 +9,7 @@
   <li> <s>Multiple aliases are not being appended</s></li>
   <li> <s>No Confidence scores for aliases.</s></li>
 
-  <li> Too slow, 3.5 mins for 1000 entities</li>
+  <li> <s>Too slow, 3.5 mins for 1000 entities</s></li>
   
   
 </ol>
