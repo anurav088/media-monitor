@@ -16,11 +16,14 @@ headers = {
     }
 
 def extract_names(data):
-    names = []
+    names = {}
     
     for i in data:
         if 'name' in data[i]:
-            names.append(data[i]['name'])
+            names[(data[i]['name'])] = []
+            for j in data[i]['instances']:
+                names[(data[i]['name'])].append(j['exact'])
+
  
     return names
 
