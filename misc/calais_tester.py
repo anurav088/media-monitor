@@ -22,8 +22,7 @@ def extract_names(data):
         if 'name' in data[i]:
             names[(data[i]['name'])] = []
             for j in data[i]['instances']:
-                names[(data[i]['name'])].append(j['exact'])
-
+                names[(data[i]['name'])].append({j['exact']: j['detection']})
  
     return names
 
