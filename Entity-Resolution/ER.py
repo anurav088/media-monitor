@@ -6,8 +6,8 @@ from elasticsearch import Elasticsearch
 from collections import Counter
 
 client = Elasticsearch(
-    cloud_id="5a253761e0f2466baedd513681b7723e:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyQwY2ZkZDVjZDNmZGQ0NzNjYmJiZjYzNzdkYjE3YTI1NyRkOWNlY2IwMDAyM2M0NGJjYWUzYWY2NjEyODczMThjNQ==", 
-    api_key="NklNR0xKQUJ6VWRlaTd2RWgycTA6T1dQR0lnTjlSSHlMelRzNl9FNDVoQQ==",
+    cloud_id="ES_CLOUD_ID", 
+    api_key="ES_API_KEY",
     timeout=30,
     retry_on_timeout=True,
     max_retries=5)
