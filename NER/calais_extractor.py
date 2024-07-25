@@ -22,7 +22,7 @@ def calais_call(body):
         'Accept': '*/*',
         'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
         'Content-Type': 'text/raw',
-        'x-ag-access-token': 'umsyYonUf1c03lenJzrpSH9Uu04Hl1Tf', 
+        'x-ag-access-token': 'OPEN_CALAIS_TOKEN', 
         'x-calais-selectiveTags': 'topic-selfservice,company,person,organization,city,region',
         'outputFormat': 'application/json',
         'omitOutputtingOriginalText': 'true',
