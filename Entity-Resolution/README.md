@@ -1,17 +1,13 @@
 <img src = 'flowchart.png'>
 
 
-<h1>Issues + Changes</h1>
+<h1>File Descriptions </h1>
 
 <ol>
-  <li> <s>No consistent data for testing, (seemingly) random entities pulled from unresolved_entities in each testing run</s></li>
-  <li> <s>Exact-matching is never helpful, fuzzy-match will catch exact mathces too, removing exact-match checks</s></li>
-  <li> <s>Multiple aliases are not being appended</s></li>
-  <li> <s>No Confidence scores for aliases.</s></li>
-
-  <li> <s>Too slow, 3.5 mins for 1000 entities</s></li>
-  
-  
+  <li>ConvertEntitiesToCSV.py: Used for exporting records from Elasticsearch index to a CSV file</li>
+  <li>push_entities.py: Used for configuring and uploading data to Elasticsearch indices </li>
+  <li>ER.py: Contains the core logic and checks for entity resolution</li>
+  <li>elastic.py: Contains all Elasticsearch helper functions</li>
+  <li>main.py: Runs the pipeline, deduplicating unresolved_entities_index into resolved_entities_index</li>
 </ol>
-
 
