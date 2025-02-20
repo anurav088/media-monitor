@@ -9,8 +9,8 @@ from elastic import *
 
 def pipeline(limit = None):
     
-    unresolved_entities_index = 'unresolved'
-    resolved_entities_index = 'res_conf1'
+    unresolved_entities_index = 'var1'
+    resolved_entities_index = 'var2'
     
     entities_to_process = extract_entities(index_name=unresolved_entities_index, limit = limit)
 
@@ -35,6 +35,7 @@ def pipeline(limit = None):
     
 
 
-pipeline(1000)
+if __name__ == "__main__":
+    pipeline(1000)
         
 
