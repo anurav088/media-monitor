@@ -56,21 +56,10 @@ def process_documents(documents):
     
     return rows
 
-def save_to_csv(rows1, filename='Meta3.csv'):
+def save_to_csv(rows1, filename):
     header = ['Entities', 'Aliases']
     
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(header)
         writer.writerows(rows1)
-
-
-def main():
-    index_name1 = 'resolved_entities'    
-    documents1 = fetch_all_documents(index_name1)
-    rows1 = process_documents(documents1)
-    
-    save_to_csv(rows1)
-
-if __name__ == "__main__":
-    main()
