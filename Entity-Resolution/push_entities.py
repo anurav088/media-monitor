@@ -42,10 +42,3 @@ def index_csv_data(file_path, title):
             actions.append(action)
         helpers.bulk(es, actions)
 
-# Index data from POL_final.csv
-index_csv_data('POL_final.csv', 'POL')
-
-# Index data from IAS_proc.csv
-#index_csv_data('IAS_processed.csv', 'IAS')
-
-print("Data indexed successfully")
